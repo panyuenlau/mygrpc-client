@@ -16,4 +16,4 @@ RUN go build -o main .
 
 CMD ["/app/main"]
 
-EXPOSE 50051
+EXPOSE 8080
