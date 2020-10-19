@@ -3,7 +3,7 @@ FROM golang:1.15.2
 ENV export GO111MODULE=on
 ENV export PATH="$PATH:$(go env GOPATH)/bin"
 
-RUN go get github.com/panyuenlau/mygrpc-clietn/proto
+RUN go get github.com/panyuenlau/mygrpc-cliet/proto
 
 RUN mkdir /app
 
