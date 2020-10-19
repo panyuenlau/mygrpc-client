@@ -6,6 +6,14 @@ brew install go
 brew install protobuf
 ```
 
+# Setup environment variables
+```
+export GOROOT=/usr/local/opt/go/libexec
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOROOT:$GOPATH:$GOBIN
+```
+
 # gRPC
 ## Install the protocol compiler plugin
 ```
