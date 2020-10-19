@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	pb "./proto"
+	pb "github.com/panyuenlau/mygrpc-server/proto"
 	"google.golang.org/grpc"
 )
 
@@ -22,10 +22,14 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.SayHello(ctx, &pb.Request{ReqeustMessage: "Hello Server!"})
+	sendMsg := "Hello Server!"
+	r, err := c.SayHello(ctx, &pb.Request{ReqeustMessage: sendMsg})
+
 	if err != nil {
-		log.Fatalf("ERROR: failed to send hello message to the server: %v", err)
+		log.Fatalf("ERROR: failed to send message to the server: %v", err)
+	} else {
+		log.Printf("The message \"" + sendMsg + "\"" + " was sent to the server, waiting for response...")
 	}
 
-	log.Printf("Greeting: %s\n", r.GetReplyMessage())
+	log.Printf("Message from the server: \"%s\n", r.GetReplyMessage()+"\"")
 }
