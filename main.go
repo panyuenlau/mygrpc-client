@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"net/http"
@@ -13,12 +13,6 @@ import (
 )
 
 const (
-	// address for local debug
-	// address = "localhost:50051"
-
-	// address used in the K8s cluster
-	address = "grpc-service:50051"
-
 	connectionDeadline = 5 // max amount of time(in seconds) the client tries to build connection with the server
 )
 
@@ -28,7 +22,16 @@ const (
 */
 
 func handler(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("Check server status request received, now dialing the gRPC server....")
+	log.Println("Check server status request received")
+
+	address := os.Getenv("SERVICE_TO_GRPC_SERVER")
+
+	if len(address) == 0 {
+		log.Println("ERROR: failed to retreive the service name to reach the gRPC server, existing...")
+		return
+	}
+
+	log.Println("Now dialing the gRPC server through", address)
 
 	// set timeout for dialing to the server
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(time.Duration(connectionDeadline)*time.Second))
