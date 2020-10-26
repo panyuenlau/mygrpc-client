@@ -15,10 +15,11 @@ import (
 const (
 	// address for local debug
 	// address = "localhost:50051"
+
 	// address used in the K8s cluster
 	address = "grpc-service:50051"
 
-	connectionDeadline = 5 // max amount of time the client tries to build connection with the server
+	connectionDeadline = 5 // max amount of time(in seconds) the client tries to build connection with the server
 )
 
 /*
@@ -33,7 +34,7 @@ func handler(w http.ResponseWriter, req *http.Request) {
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(time.Duration(connectionDeadline)*time.Second))
 
 	if err != nil {
-		log.Fatalf("ERROR: failed to connect gRPC server: %v", err)
+		log.Println("ERROR: failed to connect gRPC server:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -51,17 +52,17 @@ func handler(w http.ResponseWriter, req *http.Request) {
 	r, err := c.SayHello(ctx, &pb.Request{ReqeustMessage: sendMsg})
 
 	if err != nil {
-		log.Fatalf("ERROR: failed to send message to the server: %v", err)
+		log.Println("ERROR: failed to send message to the server:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	log.Printf("The message \"%s\" has been sent to the server", sendMsg)
-
-	log.Printf("Respopnse from the server: \"%s\"\n\n", r.GetReplyMessage())
+	log.Printf("Respopnse from the server: \"%s\"", r.GetReplyMessage())
 }
 
 func main() {
 	http.HandleFunc("/serverstatus", handler)
-	http.ListenAndServe(":8081", nil)
+	err := http.ListenAndServe(":8081", nil)
+	log.Fatal("ListenAndServe: ", err)
 }
